@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="resultDiv"></div>
+    <script>
+        // Результаты вычислений должны иметь следующий вид t-k/fac,
+        //  где t – количество миллисекунд прошедшее с момента начала работы  цикла запросов,
+        //   k – параметр пересылаемый серверу, fac  факториал k.  
+        let max = 21;
+        let result = document.getElementById("resultDiv");
+        let time = Date.now();
+
+        for (let index = 0; index < max; index++) {
+            fetch('http://localhost:5000/fact?k='+index, {
+				method: 'GET', 
+                mode: 'no-cors',
+				headers: {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json',
+                    "Access-Control-Allow-Origin": "*"
+				}})
+            .then(resp => resp.json())
+            .then(data => result.innerHTML += `${index}:${Date.now() - time}-${data.k}/${data.factorial} <br>`)
+        }
+    </script>
+</body>
+</html>
