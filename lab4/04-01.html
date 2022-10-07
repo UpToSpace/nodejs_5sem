@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Node 04-02</title>
+</head>
+
+<body>
+    <h1>task 04-02</h1>
+    <div class="row">
+        <label>ID</label><br>
+        <input min="0" type="number" id="idValue" />
+    </div>
+    <div class="row">
+        <label>Name</label><br>
+        <input type="text" id="nameValue" />
+    </div>
+    <div class="row">
+        <label>BDay</label><br>
+        <input type="text" id="bdayValue" />
+    </div>
+
+    <button onclick="get()">GET</button>
+    <button onclick="post()">POST</button>
+    <button onclick="put()">PUT</button>
+    <button onclick="remove()">DELETE</button>
+    <table id="status"></table>
+    <script>
+        let get = () => {
+            console.log('GET button pressed');
+            fetch('http://localhost:5000/api/db', {
+                method: 'GET',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(response => response.json())
+                .then(data => dataHandler(data))
+        }
+
+        let post = () => {
+            let inputId = document.getElementById('idValue');
+            let inputName = document.getElementById("nameValue");
+            let inputBDay = document.getElementById("bdayValue");
+
+            fetch('http://localhost:5000/api/db', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: inputId.value,
+                    name: inputName.value,
+                    bday: inputBDay.value
+                })
+            })
+                .then(response => response.json())
+                .then(data => dataHandler(data))
+        }
+
+        let put = () => {
+            let inputId = document.getElementById('idValue');
+            let inputName = document.getElementById("nameValue");
+            let inputBDay = document.getElementById("bdayValue");
+
+            fetch('http://localhost:5000/api/db', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: +inputId.value,
+                    name: inputName.value,
+                    bday: inputBDay.value
+                })
+            })
+                .then(response => response.json())
+                .then(data => dataHandler(data))
+        }
+
+        let remove = () => {
+            let inputId = document.getElementById('idValue');
+            console.log('DELETE button pressed');
+            fetch(`http://localhost:5000/api/db?id=${inputId.value}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: inputId.value
+                })
+            })
+                .then(response => response.json())
+                .then(data => dataHandler(data))
+        }
+
+        let dataHandler = (data) => {
+            console.log(data);
+            let html = `  <tr>
+    <th>id</th>
+    <th>name</th>
+    <th>bday</th>
+  </tr>`
+            data.forEach(e => {
+                html += `  <tr>
+                                <td>${e.id}</td>
+                                <td>${e.name}</td>
+                                <td>${e.bday}</td>
+                            </tr>`
+            });
+            document.getElementById("status").innerHTML = html;
+        }
+
+    </script>
+</body>
+
+</html>
