@@ -2,6 +2,7 @@ const http = require("http")
 const fs = require("fs")
 const url = require("url")
 const db_module = require("./db");
+const { Socket } = require("dgram");
 
 let db = new db_module();
 let timerSd = null;
@@ -11,6 +12,7 @@ let commitNumber = 0;
 let requestNumber = 0;
 let startStat = 'no stat';
 let endStat = 'no stat';
+let prevstat = {start: startStat, finish: endStat, request: requestNumber, commit: commitNumber};
 
 //listeners
 db.on('GET', (req, res) => {
@@ -49,9 +51,9 @@ let server = http.createServer(function (request, response) {
         case "/api/db":
             db.emit(request.method, request, response)
             break
-        case "/api/ss":
+        case "/api/ss":          
             response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-            response.end(JSON.stringify(printStat()))
+            response.end(JSON.stringify(prevstat))
             break
         case "/":
             let html = fs.readFileSync('./04-01.html');
@@ -64,11 +66,13 @@ let server = http.createServer(function (request, response) {
 
 }).listen(5000)
 
-console.log('Server running at http://localhost:5000/api/ss');
+console.log('Server running at http://localhost:5000/');
 
 function printStat() {
     return {start: startStat, finish: endStat, request: requestNumber, commit: commitNumber}
 }
+
+server.on("connection",(socket)=>socket.unref())
 process.stdin.setEncoding('utf-8')
 process.stdin.on('readable', () => {
     let command = null;
@@ -85,6 +89,8 @@ process.stdin.on('readable', () => {
                     } else {
                         timerSd = setTimeout(() => 
                         {
+                            clearInterval(timerSc);
+                            clearTimeout(timerSs);
                             process.stdin.unref();
                             server.close(() => console.log('server closed'));
                         }, argument * 1000)
@@ -110,9 +116,14 @@ process.stdin.on('readable', () => {
                     } else {
                         console.log('stat will be printed in ' + argument)
                         startStat = new Date().toLocaleTimeString();
-                        timerSs = setTimeout(() => 
-                        endStat = new Date().toLocaleTimeString(), argument * 1000).unref()
-                    }
+                        timerSs = setTimeout(() => {
+                            endStat = new Date().toLocaleTimeString()
+                            prevstat = printStat();
+                            console.log(printStat())
+                            requestNumber = 0
+                            commitNumber = 0
+                        }, argument * 1000).unref()
+                    }  
                     break
                 default:
                     console.log('command is wrong... ' + command)
