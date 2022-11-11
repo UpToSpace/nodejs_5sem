@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>task 06-02</h1>
+
+    <form action="http://localhost:5000/" method="POST">
+    <h2>Sender</h2>
+    <div class="row">
+        <label>Email</label><br>
+        <p> korzhovalera2002@gmail.com </p>
+    </div><br><br>
+
+    <h2>Receiver</h2>
+    <div class="row">
+        <label>Email</label><br>
+        <input min="0" type="email" name="receiverEmail" />
+    </div>
+    <div class="row">
+        <label>Subject</label><br>
+        <input min="0" type="text" name="subject" />
+    </div>
+    <div class="row">
+        <label>Message</label><br>
+        <input type="text" name="message" />
+    </div>
+    <div>
+        <button type="submit">send</button>
+    </div>
+</form>
+
+</body>
+</html>
