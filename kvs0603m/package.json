@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "nodemailer": "^6.8.0"
+  },
+  "name": "kvs0603m",
+  "version": "1.0.0",
+  "main": "kvs0603m.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "me",
+  "license": "ISC",
+  "description": ""
+}
