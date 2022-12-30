@@ -1,0 +1,50 @@
+[{
+  "_id": {
+    "$oid": "63a82b50988e35cfb038cc8d"
+  },
+  "pulpit": "ПОИТ",
+  "pulpit_name": "Программное Обеспечение",
+  "faculty": "ФИТ"
+},{
+  "_id": {
+    "$oid": "63a82bc8988e35cfb038cc8f"
+  },
+  "pulpit": "Лес",
+  "pulpit_name": "Лесники",
+  "faculty": "ЛХ"
+},{
+  "_id": {
+    "$oid": "63a82bc8988e35cfb038cc90"
+  },
+  "pulpit": "ХТ",
+  "pulpit_name": "Химическое Обеспечение",
+  "faculty": "ХТиТ"
+},{
+  "_id": {
+    "$oid": "63a82bc8988e35cfb038cc91"
+  },
+  "pulpit": "Пил",
+  "pulpit_name": "Пилильщики",
+  "faculty": "ДО"
+},{
+  "_id": {
+    "$oid": "63a82bc8988e35cfb038cc92"
+  },
+  "pulpit": "ЭК",
+  "pulpit_name": "Экономисты",
+  "faculty": "ИЭФ"
+},{
+  "_id": {
+    "$oid": "63a845a9834cd81b97c34723"
+  },
+  "pulpit": "new1",
+  "pulpit_name": "newnew1111",
+  "faculty": "ЛХ"
+},{
+  "_id": {
+    "$oid": "63a845a9834cd81b97c34724"
+  },
+  "pulpit": "newnewnew",
+  "pulpit_name": "new2222",
+  "faculty": "ХТиТ"
+}]
