@@ -10,7 +10,7 @@ let startWS = () => {
 
     socket.onmessage = (message) => console.log(message.data)
 
-    socket.onclose = (e) => { console.log('socket.onclose() ', e); }
+    socket.onclose = (e) => { console.log('socket.onclose() '); }
     setTimeout(() => {
         clearInterval(sender);
         socket.close();

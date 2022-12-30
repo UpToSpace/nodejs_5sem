@@ -13,6 +13,7 @@ net.createServer((sock)=>
     {
         console.log("Server closed");
     })
-}).listen(PORT,HOST);
+    sock.on('error', e => console.log(e))
+}).listen(PORT, HOST);
 
 console.log('TCP-сервер '+ HOST + ':' + PORT);

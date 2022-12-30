@@ -13,6 +13,36 @@ let readJsonFile = () => {
     return JSON.parse(fs.readFileSync(filepath))
 }
 
+let wsServer = new ws.Server({ port: 4001, host: 'localhost', path: '/broadcast' });
+
+wsServer.on('connection', (ws) => {
+    fs.watch(filepath, { encoding: 'buffer' }, (eventType, filename) => {
+        if (eventType === 'change') {
+            wsServer.clients.forEach((client) => {
+                if (client.readyState === ws.OPEN) {
+                    client.send(`File ${filename} was changed`);
+                }
+            });
+        }
+    });
+
+    fs.readdir('./files', (err, files) => {
+        for (let i = 0; i < files.length; i++) {
+            fs.watch(('./files/' + files[i]), {encoding: 'buffer'}, (eventType, filename) => {
+                if(eventType === 'change') {
+                    wsServer.clients.forEach((client) => {
+                        if (client.readyState === ws.OPEN) {
+                            client.send(`File ${filename} was modified`);
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+wsServer.on('error', (e) => { console.log('ws server error', e); });
+console.log(`WS server: host: ${wsServer.options.host}, port: ${wsServer.options.port}, path: ${wsServer.options.path}`);
+
 let server = http.createServer((request, response) => {
 
     let pathname = url.parse(request.url).pathname
@@ -23,7 +53,7 @@ let server = http.createServer((request, response) => {
         }
 
         if (pathname == '/backup') {
-            fs.readdir('./', (err, files) => {
+            fs.readdir('./files', (err, files) => {
                 response.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' }); let json = [];
                 let listOfBackups = [];
                 for (let i = 0; i < files.length; i++) {
@@ -83,12 +113,12 @@ let server = http.createServer((request, response) => {
                 let date = new Date();
                 let name = '';
                 name += date.getFullYear();
-                name += (date.getMonth() + 1);
-                name += date.getDate();
-                name += (date.getHours());
-                name += date.getMinutes();
+                name += date.getMonth() + 1;
+                date.getDate() < 10 ? name += '0' + date.getDate() : name += date.getDate();
+                date.getHours() < 10 ? name += '0' + date.getHours() : name += date.getHours();
+                date.getMinutes() < 10 ? name += '0' + date.getMinutes() : name += date.getMinutes();
                 name += "_StudentList.json";
-                fs.copyFile(filepath, name, (e) => {
+                fs.copyFile(filepath, './files/' + name, (e) => {
                     if (e) {
                         console.log('error ' + e.message);
                         response.end('error ' + e.message)
@@ -142,10 +172,10 @@ let server = http.createServer((request, response) => {
     if (request.method === 'DELETE') {
         if (/\/backup\/\d{8}/.test(pathname)) {
             let n = + pathname.split('/')[2]
-            fs.readdir('./', null, (err, files) => {
+            fs.readdir('D:/University/cross/labs/lab12/files', null, (err, files) => {
                 files.map(fileName => {
-                    if (fileName.includes('StudentList') && fileName.split('_')[0] > n) {
-                        fs.unlink('./' + fileName, e => {
+                    if (fileName.includes('StudentList') && +fileName.split('_')[0] < n) {
+                        fs.unlink('./files/' + fileName, e => {
                             if (e) {
                                 console.log(`error during delete ${fileName}`)
                             } else {
@@ -179,42 +209,11 @@ let server = http.createServer((request, response) => {
             }
         }
     }
-}
 
-).listen(3000)
+    fs.watch(filepath, (event,f)=>
+    {
+        if(f) wsServer.emit("change");
+    })
+}).listen(3000)
 
-let wsServer = new ws.Server({ port: 4000, host: 'localhost', path: '/broadcast' });
-
-wsServer.on('connection', (ws) => {
-    fs.watch(filepath, { encoding: 'buffer' }, (eventType, filename) => {
-        if (eventType === 'change') {
-            wsServer.clients.forEach((client) => {
-                if (client.readyState === ws.OPEN) {
-                    client.send(`File ${filename} was changed`);
-                }
-            });
-        }
-    });
-    fs.readdir('./', (err, files) => {
-        if (err) {
-            console.log('error reading directory')
-        } else {
-            for (let i = 0; i < files.length; i++) {
-                fs.watch((files[i].includes('_StudentList')), { encoding: 'buffer' }, (eventType, filename) => {
-                    if (eventType === 'change') {
-                        wsServer.clients.forEach((client) => {
-                            if (client.readyState === ws.OPEN) {
-                                client.send(`File ${filename} was changed`);
-                            }
-                        });
-                    }
-                });
-            }
-        }
-    });
-});
-wsServer.on('error', (e) => { console.log('ws server error', e); });
-console.log(`WS server: host: ${wsServer.options.host}, post: ${wsServer.options.port}, path: ${wsServer.options.path}`);
-
-
-console.log('Server running at http://localhost:3000/')
+console.log('Server running at http://localhost:3000/');

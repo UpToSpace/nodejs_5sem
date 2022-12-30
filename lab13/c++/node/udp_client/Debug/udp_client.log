@@ -1,0 +1,4 @@
+﻿  udp_client.cpp
+D:\University\cross\labs\lab13\c++\node\udp_client\udp_client.cpp(34,24): warning C4101: end: неиспользованная локальная переменная
+D:\University\cross\labs\lab13\c++\node\udp_client\udp_client.cpp(34,17): warning C4101: start: неиспользованная локальная переменная
+  udp_client.vcxproj -> D:\University\cross\labs\lab13\c++\node\Debug\udp_client.exe

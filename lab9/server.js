@@ -25,8 +25,8 @@ let http_handler = (req, res) => {
         }
     }
 
-    let result = ''
-    let body = ''
+    var result = ''
+    var body = ''
 
     if (req.method === 'POST') {
         switch (url.parse(req.url).pathname) {
@@ -39,23 +39,22 @@ let http_handler = (req, res) => {
                 });
                 break;
             case '/4':
-                result = '';
-                body = '';
-                req.on('data', chunk => { body += chunk.toString(); });
-                req.on('end', () => {
+                let result1='';
+                let body='';
+                req.on('data',chunk=>{body+=chunk.toString();});
+                req.on('end',()=>{
                     console.log(body);
                     let os = JSON.parse(body);
-                    result = {
-                        __comment: "Ответ",
-                        x_plus_y: os.x + os.y,
-                        Concatination_s_o: os.s + '.' + os.o.surname + "," + os.o.name,
-                        Length_m: os.m.length
+                    result1={
+                        __comment:"Ответ.Лабораторная работа 8/10",
+                        x_plus_y:os.x+os.y,
+                        Concatination_s_o:os.s+'.'+os.o.surname+","+os.o.name,
+                        Length_m:os.m.length
                     };
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    console.log(result);
-                    res.end(JSON.stringify(result));
-                }
-                    , function (err, reply) {
+                    res.writeHead(200,{'Content-Type': 'application/json'});
+                    console.log(result1);
+                     res.end(JSON.stringify(result1));}
+                    ,function(err,reply){
                         console.log(err && err.stack);
                         console.dir(reply);
                     });
@@ -94,20 +93,28 @@ let http_handler = (req, res) => {
                     });
                 break;
             case '/6':
-                result = '';
-                let form = new mp.Form({ uploadDir: './static' });
-                // form.on('field', (name, value) => {
-                //     console.log('------------field-------------');
-                //     console.log(name, value);
-                //     result += `<br/>---${name}= ${value}`;
-                // });
-                form.on('file', (name, file) => {
-                    console.log('-----file ------------');
-                    console.log(name, file);
-                    result += `<br/>---${name}= ${file.originalFilename}: ${file.path}`;
-                });
+                let result = '';
+                let form = new mp.Form({ uploadDir:'./static' });
                 form.parse(req);
-                res.end()
+                form.on('field',(name, field)=>{
+                    console.log('---- got a field:');
+                    console.log(name, field);
+                    result += `<br/>${name} = ${field}`;
+                });
+                form.on('file', (name, file)=>{
+                    console.log('---- got a file:');
+                    console.log(name, file);
+                    result += `<br/>${name} = original name: ${file.originalFilename}; path: ${file.path}`;
+                });
+                form.on("error", (err) => {
+                    res.writeHead(200, { "Content-Type": "text/html" });
+                    res.end("<h2>form error</h2>");
+                });
+                form.on("close", () => {
+                    res.writeHead(200, { "Content-Type": "text/html" });
+                    res.write("<h2>success! form data:</h2>");
+                    res.end(result);
+                });
                 break;
             default:
                 break;

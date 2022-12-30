@@ -24,8 +24,14 @@ server.register('mul', (params) => {
 }).public();
 
 let fibonacci = (n) => {
-    if (n <= 1) return 1;
-    return fibonacci(n - 1) + fibonacci(n - 2);
+    var fibonacci = [0, 1];  
+    if (n != 1) { 
+        for (i = 2; i < n; i++ ) { 
+            fibonacci[i] = fibonacci[i-1] + fibonacci[i-2]; 
+        } 
+        return fibonacci; 
+    } 
+    else return 0; 
 }
 
 server.register('fib', (params) => {

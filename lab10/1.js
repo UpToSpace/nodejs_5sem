@@ -25,7 +25,7 @@ wsServer.on('connection', (ws) => {
     console.log('client connected');
     setInterval(() => {
         ws.send(`Server: ${n}->${++k}`);
-    }, 5000);
+    }, 5 * 1000);
     ws.on('message', (m) => {
         console.log(`received message => ${m}`);
         n = Number.parseInt(m.toString().split(":")[1]);

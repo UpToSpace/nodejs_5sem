@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "graphql": "^15.8.0",
+    "mysql2": "^2.3.3"
+  }
+}

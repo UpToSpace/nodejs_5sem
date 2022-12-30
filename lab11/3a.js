@@ -12,4 +12,4 @@ wsClient.on('pong', (data)=>{
 setInterval(() => {
     console.log('CLIENT PING');
     wsClient.ping('CLIENT PING');
-}, 5000);
+}, 5 * 1000);

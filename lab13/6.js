@@ -3,7 +3,7 @@ const net = require('net');
 let HOST = '127.0.0.1';
 let PORT = 4000;
 
-let prfx = typeof process.argv[2] == 'undefined' ? 2 : process.argv[2];
+let prfx = isNaN(process.argv[2]) ? 2 : process.argv[2];
 
 let client = new net.Socket();
 let buffer = new Buffer.alloc(5);

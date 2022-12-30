@@ -9,15 +9,15 @@ wsServer.on('connection', (socket) => {
             if(client.readyState === ws.OPEN) 
                 client.send(`11-03-server: ${k}`);
         });
-    }, 15000);
+    }, 15 * 1000);
     
     setInterval(() => { 
         console.log(`SERVER PING: ${wsServer.clients.size} clients`);
         socket.ping(`SERVER PING: ${wsServer.clients.size} clients`);
-    }, 5000);
+    }, 5 * 1000);
 
     socket.on('pong', (data)=>{
-        console.log(`SERVER.on('pong'): ${data.toString()}`);
+        console.log(`SERVER.on('pong'): ${data.toString()} \n`);
     });
 });
 wsServer.on('error', (e) => { console.log('ws server error', e); });
